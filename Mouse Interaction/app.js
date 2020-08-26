@@ -6,16 +6,30 @@ canvas.style.border = '2px solid wheat';
 canvas.style.backgroundColor = 'rgb(0, 0, 0)';
 
 window.addEventListener('mousemove', (e) => {
-    console.clear()
     mouse.x = e.x;
     mouse.y = e.y;
-    console.log(mouse)
+})
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    init();
 })
 
 let mouse = {
     x: undefined,
     y: undefined,
 }
+
+let colorArray = [
+    '#2C3E50',
+    '#E74C3C',
+    '#ECF0F1',
+    '#3498DB',
+    '#2980B9'
+]
+
+
 class Ball {
     constructor(x, y, x_velocity, y_velocity, radius, color) {
         this.x = x;
@@ -23,6 +37,8 @@ class Ball {
         this.x_velocity = x_velocity;
         this.y_velocity = y_velocity;
         this.radius = radius;
+        this.maxRadius = 40;
+        this.minRadius = radius;
         this.color = color;
     }
     update() {
@@ -43,10 +59,10 @@ class Ball {
 
         if (mouse.x - this.x < 50 && mouse.x - this.x > -50 &&
             mouse.y - this.y < 50 && mouse.y - this.y > -50) {
-            if (this.radius < 40) {
+            if (this.radius < this.maxRadius) {
                 this.radius += 1
             }
-        } else if (this.radius > 2) {
+        } else if (this.radius > this.minRadius) {
             this.radius -= 1
         }
 
@@ -60,18 +76,6 @@ class Ball {
     }
 }
 
-let balls = [];
-
-for (let i = 0; i < 10; i++) {
-    let radius = Math.floor(Math.random() * 26 + 5); // from 5 to 30 int
-    let x = Math.random() * (canvas.width - radius * 2) + radius;
-    let y = Math.random() * (canvas.height - radius * 2) + radius;
-    let x_velocity = (Math.random() - 0.5) * 2;
-    let y_velocity = (Math.random() - 0.5) * 2;
-    let color = `rgb(${['doesnt', 'really', 'matter'].map(() => Math.floor(Math.random() * 256))})`;
-    balls.push(new Ball(x, y, x_velocity, y_velocity, radius, color))
-
-}
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     requestAnimationFrame(animate);
@@ -80,4 +84,19 @@ function animate() {
     });
 }
 
+let balls = [];
+function init() {
+    balls = [];
+    for (let i = 0; i < 200; i++) {
+        let radius = Math.floor(Math.random() * 3 + 1); // from 1 to 3 int
+        let x = Math.random() * (canvas.width - radius * 2) + radius;
+        let y = Math.random() * (canvas.height - radius * 2) + radius;
+        let x_velocity = (Math.random() - 0.5) * 2;
+        let y_velocity = (Math.random() - 0.5) * 2;
+        let color = colorArray[Math.floor(Math.random() * colorArray.length)];
+        balls.push(new Ball(x, y, x_velocity, y_velocity, radius, color))
+
+    }
+}
+init()
 animate();
