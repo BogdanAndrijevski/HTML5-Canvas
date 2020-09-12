@@ -2,10 +2,30 @@ const body = document.querySelector('body');
 const canvas = document.querySelector('canvas');
 const img = document.querySelector('img');
 const ctx = canvas.getContext('2d');
+const radius = 300;
+let isImage = true;
 
 
+function animateDot(dot, canvas) {
+    const rand = Math.random() * Math.PI * 2; // to get 6.28 - equals to 360 degrees
 
+    let x = Math.sin(rand) * radius + canvas.width / 2;
+    let y = Math.cos(rand) * radius + canvas.height / 2;
+    if (isImage) {
+        x = dot.imageX;
+        y = dot.imageY;
+    }
 
+    gsap.to(dot, {
+        duration: 1.75 + Math.random(), // animate duration
+        x: x,
+        y: y,
+        ease: 'cubic.inOut',
+        onComplete: () => {
+            animateDot(dot, canvas)
+        }
+    })
+}
 class Dot {
     constructor(x, y, r, g, b, imageX, imageY) {
         this.x = x
@@ -27,7 +47,9 @@ class Dot {
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
-
+addEventListener('click', () => {
+    isImage = !isImage;
+})
 addEventListener('load', () => {
     ctx.drawImage(img, 0, 0)
     const imageData = ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight).data;
@@ -50,11 +72,14 @@ addEventListener('load', () => {
         }
     }
 
-    pixels.forEach(pixel => {
-        const x = pixel.x + canvas.width / 2 - img.naturalWidth / 2;
-        const y = pixel.y + canvas.height / 2 - img.naturalHeight / 2;
-        dots.push(new Dot(x, y, pixel.r, pixel.g, pixel.b, 0, 0));
-        // dots.push(new Dot(pixel.x, pixel.y, pixel.r, pixel.g, pixel.b, 0, 0));
+    pixels.forEach((pixel, i) => {
+        const imageX = pixel.x + canvas.width / 2 - img.naturalWidth / 2;
+        const imageY = pixel.y + canvas.height / 2 - img.naturalHeight / 2;
+        const rand = Math.random() * Math.PI * 2; // to get 6.28 - equals to 360 degrees
+        const x = Math.sin(rand) * radius + canvas.width / 2;
+        const y = Math.cos(rand) * radius + canvas.height / 2;
+        dots.push(new Dot(x, y, pixel.r, pixel.g, pixel.b, imageX, imageY));
+        animateDot(dots[i], canvas);
     });
 
     ctx.clearRect(0, 0, innerWidth, innerHeight);
@@ -62,10 +87,8 @@ addEventListener('load', () => {
         dot.draw(ctx);
     });
 
-
-
     function animate() {
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         requestAnimationFrame(animate);
         dots.forEach(dot => {
             dot.draw(ctx);
@@ -73,7 +96,7 @@ addEventListener('load', () => {
     }
     animate();
 
-}) // on Load end
+})
 
 
 
