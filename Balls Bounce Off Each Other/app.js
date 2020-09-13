@@ -16,6 +16,14 @@ addEventListener('resize', () => {
     init()
 })
 
+let colorArray = [
+    '#FFDB80',
+    '#F5EE8E',
+    '#D2FFAD',
+    '#A1FFB9',
+    '#A5FFF5',
+]
+
 let mouse = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -47,9 +55,10 @@ class Ball {
         this.x = x;
         this.y = y;
         this.mass = 1;
+        this.opacity = 0;
         this.velocity = {
-            x: Math.random() - 0.5,
-            y: Math.random() - 0.5
+            x: (Math.random() - 0.5) * 5,
+            y: (Math.random() - 0.5) * 5
         }
         this.radius = radius;
         this.color = color;
@@ -73,6 +82,13 @@ class Ball {
             this.velocity.y = - this.velocity.y;
         }
 
+        if (distance(mouse.x, mouse.y, this.x, this.y) < 120 && this.opacity < 0.2) {
+            this.opacity += 0.02;
+        } else if (this.opacity > 0) {
+            this.opacity -= 0.02;
+            this.opacity = Math.max(0, this.opacity)
+        }
+
         this.x += this.velocity.x;
         this.y += this.velocity.y;
         this.draw();
@@ -80,8 +96,14 @@ class Ball {
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
         ctx.strokeStyle = this.color;
         ctx.stroke()
+        ctx.closePath();
     }
 }
 
@@ -89,12 +111,12 @@ class Ball {
 let balls;
 function init() {
     balls = [];
-    for (let i = 0; i < 4; i++) {
-        const color = 'yellow';
-        const radius = 50;
-        let x = randomIntFromRange(radius, canvas.width - radius) 
+    for (let i = 0; i < 100; i++) {
+        const color = randomColor(colorArray)
+        const radius = 15;
+        let x = randomIntFromRange(radius, canvas.width - radius)
         let y = randomIntFromRange(radius, canvas.height - radius)
-      
+
         if (i != 0) {
             for (let j = 0; j < balls.length; j++) {
                 if (getDistance(x, y, balls[j].x, balls[j].y) - (radius * 2) < 0) {
