@@ -46,6 +46,7 @@ class Ball {
     constructor(x, y, radius, color) {
         this.x = x;
         this.y = y;
+        this.mass = 1;
         this.velocity = {
             x: Math.random() - 0.5,
             y: Math.random() - 0.5
@@ -57,7 +58,8 @@ class Ball {
         for (let i = 0; i < particles.length; i++) {
             if (particles[i] === this) continue;
             if (getDistance(this.x, this.y, particles[i].x, particles[i].y) - (this.radius * 2) < 0) {
-                console.log('has colided')
+                // console.log('has collided')
+                resolveCollision(this, particles[i])
             }
         }
 
@@ -90,11 +92,9 @@ function init() {
     for (let i = 0; i < 4; i++) {
         const color = 'yellow';
         const radius = 50;
-        let x = randomIntFromRange(radius, canvas.width - radius)
-        // let x = Math.random() * innerWidth
+        let x = randomIntFromRange(radius, canvas.width - radius) 
         let y = randomIntFromRange(radius, canvas.height - radius)
-        // let y = Math.random() * innerHeight
-
+      
         if (i != 0) {
             for (let j = 0; j < balls.length; j++) {
                 if (getDistance(x, y, balls[j].x, balls[j].y) - (radius * 2) < 0) {
