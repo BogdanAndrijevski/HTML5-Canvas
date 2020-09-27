@@ -2,9 +2,11 @@ let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 canvas.width = innerWidth;
 canvas.height = innerHeight;
-canvas.style.border = '2px solid wheat';
+canvas.style.border = '1px solid wheat';
 canvas.style.backgroundColor = 'rgb(11, 11, 11)';
 
+let gravity = 1;
+let friction = 0.99;
 
 
 addEventListener('resize', () => {
@@ -23,9 +25,9 @@ class Ball {
     }
     update() {
         if (this.y + this.radius > canvas.height) {
-            this.y_velocity = -this.y_velocity;
+            this.y_velocity = -this.y_velocity * friction; 
         } else {
-            this.y_velocity += 1;
+            this.y_velocity += gravity;
         }
         this.y += this.y_velocity;
         this.draw();
@@ -42,13 +44,13 @@ let ball;
 
 
 function init() {
-    ball = new Ball(canvas.width / 2, canvas.height / 2, 1, 80, 'red');
+    ball = new Ball(canvas.width / 2, canvas.height / 2, 1, 20, 'red');
 
 }
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    requestAnimationFrame(animate);
     ball.update();
+    requestAnimationFrame(animate);
 
 }
 
