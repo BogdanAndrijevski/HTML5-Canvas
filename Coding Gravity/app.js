@@ -20,20 +20,26 @@ function randomIntFromRange(min, max) {
 }
 
 class Ball {
-    constructor(x, y, y_velocity, radius, color) {
+    constructor(x, y, x_velocity, y_velocity, radius, color) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.color = color;
         this.y_velocity = y_velocity
+        this.x_velocity = x_velocity
     }
     update() {
+        if (this.x + this.radius + this.x_velocity > canvas.width || this.x - this.radius <= 0) {
+            this.x_velocity = -this.x_velocity
+        }
+
         if (this.y + this.radius + this.y_velocity > canvas.height) {
             this.y_velocity = -this.y_velocity * friction;
         } else {
             this.y_velocity += gravity;
         }
         this.y += this.y_velocity;
+        this.x += this.x_velocity;
         this.draw();
     }
     draw() {
@@ -50,12 +56,13 @@ let balls;
 function init() {
     balls = [];
     for (let i = 0; i < 10; i++) {
-        let radius = randomIntFromRange(15, 20)
+        let radius = randomIntFromRange(15, 20);
+        let x_velocity = randomIntFromRange(-2, 2)
         let x = randomIntFromRange(radius, canvas.width - radius)
         let y = randomIntFromRange(radius, canvas.height - radius)
-        balls.push(new Ball(x, y, 1, radius, 'red'))
+        balls.push(new Ball(x, y, x_velocity, 1.2, radius, 'red'))
     }
-    ball = new Ball(canvas.width / 2, canvas.height / 2, 1, 20, 'red');
+    ball = new Ball(canvas.width / 2, canvas.height / 2, 1, 1, 80, 'red');
 }
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
