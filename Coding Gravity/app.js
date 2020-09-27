@@ -6,12 +6,23 @@ canvas.style.border = '1px solid wheat';
 canvas.style.backgroundColor = 'rgb(11, 11, 11)';
 
 let gravity = 1;
-let friction = 0.99;
+let friction = 0.79;
 
+let colors = [
+    'blue',
+    'salmon',
+    'green',
+    'cyan',
+    'red',
+]
 
 addEventListener('resize', () => {
     canvas.width = innerWidth;
     canvas.height = innerHeight;
+    init()
+})
+
+addEventListener('click', () => {
     init()
 })
 
@@ -58,9 +69,11 @@ function init() {
     for (let i = 0; i < 10; i++) {
         let radius = randomIntFromRange(15, 20);
         let x_velocity = randomIntFromRange(-2, 2)
+        let y_velocity = randomIntFromRange(-2, 2)
         let x = randomIntFromRange(radius, canvas.width - radius)
         let y = randomIntFromRange(radius, canvas.height - radius)
-        balls.push(new Ball(x, y, x_velocity, 1.2, radius, 'red'))
+        let color = colors[Math.floor(Math.random() * colors.length)]
+        balls.push(new Ball(x, y, x_velocity, y_velocity, radius, color))
     }
     ball = new Ball(canvas.width / 2, canvas.height / 2, 1, 1, 80, 'red');
 }
