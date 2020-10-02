@@ -14,6 +14,7 @@ addEventListener('resize', () => {
   init()
 })
 
+
 // Objects
 class Star {
   constructor(x, y, radius, color) {
@@ -21,6 +22,12 @@ class Star {
     this.y = y
     this.radius = radius
     this.color = color
+    this.gravity = 1;
+    this.friction = 0.8;
+    this.velocity = {
+      x: 1,
+      y: 1
+    }
   }
 
   draw() {
@@ -33,6 +40,12 @@ class Star {
 
   update() {
     this.draw()
+    if (this.y + this.radius + this.velocity.y > canvas.height) {
+      this.velocity.y = -this.velocity.y * this.friction;
+    } else {
+      this.velocity.y += this.gravity;
+    }
+    this.y += this.velocity.y
   }
 }
 
@@ -42,7 +55,7 @@ function init() {
   stars = []
 
   for (let i = 0; i < 1; i++) {
-    stars.push(new Star(canvas.width/2, canvas.height/2, 30, 'blue'))
+    stars.push(new Star(canvas.width / 2, canvas.height / 2, 20, 'blue'))
   }
 }
 
@@ -53,7 +66,7 @@ function animate() {
 
 
   stars.forEach(star => {
-   star.update()
+    star.update()
   })
 }
 
