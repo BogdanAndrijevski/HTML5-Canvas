@@ -59,13 +59,14 @@ class Star {
 
 
 class MiniStar {
-  constructor(x, y, radius, color) {
+  constructor(x, y, radius) {
     this.x = x
     this.y = y
     this.radius = radius
-    this.color = color
     this.gravity = 0.1;
     this.friction = 0.8;
+    this.timeToLive = randomIntFromRange(100, 300);
+    this.opacity = 1;
     this.velocity = {
       x: randomIntFromRange(-5, 5),
       y: randomIntFromRange(-25, 25)
@@ -75,7 +76,7 @@ class MiniStar {
   draw() {
     c.beginPath()
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
+    c.fillStyle = `rgba(250, 0, 0, ${this.opacity})`
     c.fill()
     c.closePath()
   }
@@ -89,6 +90,9 @@ class MiniStar {
     }
     this.x += this.velocity.x
     this.y += this.velocity.y
+    this.timeToLive -= 1;
+    // this.opacity -= 0.01
+    this.opacity -= 1 / this.timeToLive
   }
 }
 
@@ -117,8 +121,11 @@ function animate() {
       stars.splice(index, 1)
     }
   })
-  miniStars.forEach(miniStar => {
+  miniStars.forEach((miniStar, index) => {
     miniStar.update()
+    if (miniStar.timeToLive < 0) {
+      miniStars.splice(index, 1)
+    }
   })
 }
 
@@ -130,13 +137,3 @@ function randomIntFromRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function randomColor(colors) {
-  return colors[Math.floor(Math.random() * colors.length)]
-}
-
-function distance(x1, y1, x2, y2) {
-  const xDist = x2 - x1
-  const yDist = y2 - y1
-
-  return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2))
-}
