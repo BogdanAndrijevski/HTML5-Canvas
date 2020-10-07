@@ -42,11 +42,15 @@ class Star {
     // console.log(miniStars)
   }
   draw() {
+    c.save()
     c.beginPath()
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
+    c.fillStyle = this.color;
+    c.shadowColor = '#e3eaef';
+    c.shadowBlur = 20;
     c.fill()
     c.closePath()
+    c.restore()
   }
 
   update() {
@@ -78,11 +82,15 @@ class MiniStar {
   }
 
   draw() {
+    c.save()
     c.beginPath()
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = `rgba(250, 0, 0, ${this.opacity})`
+    c.fillStyle = `rgba(227, 234, 239, ${this.opacity})`
+    c.shadowColor = '#e3eaef';
+    c.shadowBlur = 20;
     c.fill()
     c.closePath()
+    c.restore()
   }
 
   update() {
@@ -118,15 +126,24 @@ function createMountainRange(mountainAmmount, height, color) {
 // Implementation
 let stars;
 let miniStars;
+let backgroundStars;
 const backgroundGradient = c.createLinearGradient(0, 0, 0, canvas.height);
 backgroundGradient.addColorStop(0, '#171e26')
 backgroundGradient.addColorStop(1, '#3f586b')
 function init() {
   stars = []
   miniStars = []
+  backgroundStars = []
 
   for (let i = 0; i < 1; i++) {
-    stars.push(new Star(canvas.width / 2, canvas.height / 2, 20, 'blue'))
+    stars.push(new Star(canvas.width / 2, canvas.height / 2, 20, '#e3eaef'))
+  }
+
+  for (let i = 0; i < 150; i++) {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    const radius = Math.random() * 3;
+    backgroundStars.push(new Star(x, y, radius, 'white'))
   }
 }
 
@@ -137,9 +154,14 @@ function animate() {
   c.fillRect(0, 0, canvas.width, canvas.height)
   // c.clearRect(0, 0, canvas.width, canvas.height)
 
+  backgroundStars.forEach(backgroundStar => {
+    backgroundStar.draw()
+  })
+
   createMountainRange(1, canvas.height - 50, '#384551')
   createMountainRange(2, canvas.height - 100, '#2b3843')
   createMountainRange(3, canvas.height - 300, '#26333e')
+
   stars.forEach((star, index) => {
     star.update()
     if (star.radius < 0) {
@@ -152,6 +174,8 @@ function animate() {
       miniStars.splice(index, 1)
     }
   })
+
+
 }
 
 init()
