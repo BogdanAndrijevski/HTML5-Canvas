@@ -1,11 +1,15 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 canvas.style.border = '1px solid white';
-canvas.style.backgroundColor = 'rgb(11, 11, 11)';
+// canvas.style.backgroundColor = 'rgb(11, 11, 11)';
 canvas.width = innerWidth
 canvas.height = innerHeight
 
 const colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']
+
+function randomIntFromRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 addEventListener('resize', () => {
   canvas.width = innerWidth
@@ -98,8 +102,11 @@ class MiniStar {
 
 
 // Implementation
-let stars
-let miniStars
+let stars;
+let miniStars;
+const backgroundGradient = c.createLinearGradient(0, 0, 0, canvas.height);
+backgroundGradient.addColorStop(0, '#171e26')
+backgroundGradient.addColorStop(1, '#3f586b')
 function init() {
   stars = []
   miniStars = []
@@ -112,12 +119,14 @@ function init() {
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate)
-  c.clearRect(0, 0, canvas.width, canvas.height)
+  c.fillStyle = backgroundGradient;
+  c.fillRect(0, 0, canvas.width, canvas.height)
+  // c.clearRect(0, 0, canvas.width, canvas.height)
 
 
   stars.forEach((star, index) => {
     star.update()
-    if(star.radius < 0){
+    if (star.radius < 0) {
       stars.splice(index, 1)
     }
   })
@@ -133,7 +142,5 @@ init()
 animate()
 
 
-function randomIntFromRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
+
 
