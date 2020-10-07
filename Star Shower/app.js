@@ -29,7 +29,7 @@ class Star {
     this.gravity = 1;
     this.friction = 0.8;
     this.velocity = {
-      x: 1,
+      x: randomIntFromRange(-5, 5),
       y: 1
     }
   }
@@ -61,6 +61,7 @@ class Star {
     } else {
       this.velocity.y += this.gravity;
     }
+    this.x += this.velocity.x
     this.y += this.velocity.y
   }
 }
@@ -127,6 +128,8 @@ function createMountainRange(mountainAmmount, height, color) {
 let stars;
 let miniStars;
 let backgroundStars;
+let ticker = 0;
+let randomSpawnRate = 75;
 const backgroundGradient = c.createLinearGradient(0, 0, 0, canvas.height);
 backgroundGradient.addColorStop(0, '#171e26')
 backgroundGradient.addColorStop(1, '#3f586b')
@@ -135,9 +138,9 @@ function init() {
   miniStars = []
   backgroundStars = []
 
-  for (let i = 0; i < 1; i++) {
-    stars.push(new Star(canvas.width / 2, canvas.height / 2, 20, '#e3eaef'))
-  }
+  // for (let i = 0; i < 1; i++) {
+  //   stars.push(new Star(canvas.width / 2, canvas.height / 2, 20, '#e3eaef'))
+  // }
 
   for (let i = 0; i < 150; i++) {
     const x = Math.random() * canvas.width;
@@ -175,7 +178,16 @@ function animate() {
     }
   })
 
+  ticker++
+  if (ticker % randomSpawnRate == 0) {
+    const x = Math.random() * canvas.width
+    const y = -100;
+    const radius = 12
+    const color = '#e3eaef'
+    stars.push(new Star(x, y, radius, color))
 
+    randomSpawnRate = randomIntFromRange(75, 300)
+  }
 }
 
 init()
