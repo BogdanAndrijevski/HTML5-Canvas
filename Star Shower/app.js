@@ -1,6 +1,6 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-canvas.style.border = '1px solid white';
+// canvas.style.border = '1px solid white';
 // canvas.style.backgroundColor = 'rgb(11, 11, 11)';
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -100,6 +100,20 @@ class MiniStar {
   }
 }
 
+function createMountainRange(mountainAmmount, height, color) {
+  for (let i = 0; i < mountainAmmount; i++) {
+    const mountainWidth = canvas.width / mountainAmmount
+    c.beginPath()
+    c.moveTo(i * mountainWidth, canvas.height)
+    c.lineTo(i * mountainWidth + mountainWidth + 325, canvas.height)
+    c.lineTo(i * mountainWidth + mountainWidth / 2, canvas.height - height)
+    c.lineTo(i * mountainWidth - 325, canvas.height)
+    c.fillStyle = color
+    c.fill()
+    c.closePath()
+  }
+}
+
 
 // Implementation
 let stars;
@@ -123,7 +137,9 @@ function animate() {
   c.fillRect(0, 0, canvas.width, canvas.height)
   // c.clearRect(0, 0, canvas.width, canvas.height)
 
-
+  createMountainRange(1, canvas.height - 50, '#384551')
+  createMountainRange(2, canvas.height - 100, '#2b3843')
+  createMountainRange(3, canvas.height - 300, '#26333e')
   stars.forEach((star, index) => {
     star.update()
     if (star.radius < 0) {
