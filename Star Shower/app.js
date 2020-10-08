@@ -1,11 +1,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-// canvas.style.border = '1px solid white';
-// canvas.style.backgroundColor = 'rgb(11, 11, 11)';
 canvas.width = innerWidth
 canvas.height = innerHeight
-
-const colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']
 
 function randomIntFromRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -39,7 +35,6 @@ class Star {
       miniStars.push(new MiniStar(this.x, this.y, 2, 'red'))
 
     }
-    // console.log(miniStars)
   }
   draw() {
     c.save()
@@ -55,11 +50,18 @@ class Star {
 
   update() {
     this.draw()
-    if (this.y + this.radius + this.velocity.y > canvas.height) {
+    // hits the floor
+    if (this.y + this.radius + this.velocity.y > canvas.height - groundHeight) {
       this.velocity.y = -this.velocity.y * this.friction;
       this.shatter();
     } else {
       this.velocity.y += this.gravity;
+    }
+    // hits the sides
+    if (this.x + this.radius + this.velocity.x > canvas.width ||
+      this.x - this.radius <= 0) {
+      this.shatter();
+      this.velocity.x = -this.velocity.x * this.friction
     }
     this.x += this.velocity.x
     this.y += this.velocity.y
@@ -96,7 +98,7 @@ class MiniStar {
 
   update() {
     this.draw()
-    if (this.y + this.radius + this.velocity.y > canvas.height) {
+    if (this.y + this.radius + this.velocity.y > canvas.height - groundHeight) {
       this.velocity.y = -this.velocity.y * this.friction;
     } else {
       this.velocity.y += this.gravity;
@@ -130,6 +132,7 @@ let miniStars;
 let backgroundStars;
 let ticker = 0;
 let randomSpawnRate = 75;
+let groundHeight = 100;
 const backgroundGradient = c.createLinearGradient(0, 0, 0, canvas.height);
 backgroundGradient.addColorStop(0, '#171e26')
 backgroundGradient.addColorStop(1, '#3f586b')
@@ -143,9 +146,9 @@ function init() {
   // }
 
   for (let i = 0; i < 150; i++) {
+    const radius = Math.random() * 3;
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height;
-    const radius = Math.random() * 3;
     backgroundStars.push(new Star(x, y, radius, 'white'))
   }
 }
@@ -164,7 +167,8 @@ function animate() {
   createMountainRange(1, canvas.height - 50, '#384551')
   createMountainRange(2, canvas.height - 100, '#2b3843')
   createMountainRange(3, canvas.height - 300, '#26333e')
-
+  c.fillStyle = '#182028';
+  c.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight)
   stars.forEach((star, index) => {
     star.update()
     if (star.radius < 0) {
@@ -180,12 +184,11 @@ function animate() {
 
   ticker++
   if (ticker % randomSpawnRate == 0) {
-    const x = Math.random() * canvas.width
-    const y = -100;
     const radius = 12
+    const x = Math.max(radius, Math.random() * canvas.width - radius)
+    const y = -100;
     const color = '#e3eaef'
     stars.push(new Star(x, y, radius, color))
-
     randomSpawnRate = randomIntFromRange(75, 300)
   }
 }
