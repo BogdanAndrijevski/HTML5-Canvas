@@ -1,7 +1,5 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
-canvas.style.border = '2px solid wheat';
-canvas.style.backgroundColor = 'rgb(11, 11, 11)';
 canvas.width = innerWidth
 canvas.height = innerHeight
 
@@ -25,7 +23,11 @@ addEventListener('click', e => {
   const angleIncrement = Math.PI * 2 / particleCount
 
   for (let i = 0; i < particleCount; i++) {
-    particles.push(new Particle(mouse.x, mouse.y, 5, 'blue', { x: Math.cos(angleIncrement * i), y: Math.sin(angleIncrement * i) }))
+    particles.push(new Particle(mouse.x, mouse.y, 5, 'red',
+      {
+        x: Math.cos(angleIncrement * i) * Math.random(),
+        y: Math.sin(angleIncrement * i) * Math.random()
+      }))
 
   }
   console.log(particles)
@@ -39,6 +41,8 @@ class Particle {
     this.radius = radius
     this.color = color
     this.velocity = velocity
+    this.gravity = 0.005
+    this.friction = 0.999
   }
 
   draw() {
@@ -51,7 +55,9 @@ class Particle {
 
   update() {
     this.draw()
-
+    this.velocity.x *= this.friction
+    this.velocity.y *= this.friction
+    this.velocity.y += this.gravity
     this.x += this.velocity.x
     this.y += this.velocity.y
   }
@@ -70,7 +76,8 @@ function init() {
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate)
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.fillStyle = 'rgba(0,0,0,0.08)'
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   particles.forEach(particle => {
     particle.update()
