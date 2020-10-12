@@ -9,12 +9,7 @@ const mouse = {
 }
 
 
-addEventListener('resize', () => {
-  canvas.width = innerWidth
-  canvas.height = innerHeight
-
-  init()
-})
+let particles = [];
 
 addEventListener('click', e => {
   mouse.x = e.clientX
@@ -23,17 +18,14 @@ addEventListener('click', e => {
   const angleIncrement = Math.PI * 2 / particleCount
   const power = 2
   for (let i = 0; i < particleCount; i++) {
-    particles.push(new Particle(mouse.x, mouse.y, 5, `hsl(${Math.random() * 360},50%,50%)`,
-      // particles.push(new Particle(mouse.x, mouse.y, 5, 'red',
+    particles.push(new Particle(mouse.x, mouse.y, 5, `hsl(${Math.random() * 360},50%,50%)`,   
       {
-        // x: Math.cos(angleIncrement * i) * Math.random(),
         x: Math.cos(angleIncrement * i) * Math.random() * power,
-        // y: Math.sin(angleIncrement * i) * Math.random()
         y: Math.sin(angleIncrement * i) * Math.random() * power
       }))
 
   }
-  console.log(particles)
+  // console.log(particles)
 })
 
 // Objects
@@ -71,10 +63,6 @@ class Particle {
     this.opacity -= 0.005
   }
 }
-
-// Implementation
-let particles = []
-
 
 // Animation Loop
 function animate() {
